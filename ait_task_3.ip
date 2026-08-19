@@ -1,0 +1,114 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMQx0d5a4mK2h7YMD7y11fG",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/vtu28672-art/AIT-LAB/blob/main/ait_task_3.ip\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import heapq\n",
+        "\n",
+        "def heuristic(a, b):\n",
+        "    return abs(a[0] - b[0]) + abs(a[1] - b[1])\n",
+        "def find_path_astar(grid, start, goal):\n",
+        "    rows, cols = len(grid), len(grid[0])\n",
+        "    pq = [(heuristic(start, goal), 0, start, [start])]\n",
+        "    g_costs = {start: 0}\n",
+        "    while pq:\n",
+        "        f_cost, g_cost, current_node, path = heapq.heappop(pq)\n",
+        "        if current_node == goal:\n",
+        "            return path, g_cost\n",
+        "        for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:\n",
+        "            neighbor_row, neighbor_col = current_node[0] + dr, current_node[1] + dc\n",
+        "            neighbor = (neighbor_row, neighbor_col)\n",
+        "            if 0 <= neighbor_row < rows and 0 <= neighbor_col < cols and grid[neighbor_row][neighbor_col] == 0:\n",
+        "                new_g_cost = g_cost + 1\n",
+        "                if neighbor not in g_costs or new_g_cost < g_costs[neighbor]:\n",
+        "                    g_costs[neighbor] = new_g_cost\n",
+        "                    new_f_cost = new_g_cost + heuristic(neighbor, goal)\n",
+        "                    new_path = path + [neighbor]\n",
+        "                    heapq.heappush(pq, (new_f_cost, new_g_cost, neighbor, new_path))\n",
+        "    return None, None"
+      ],
+      "metadata": {
+        "id": "XW8VTghPMVGR"
+      },
+      "execution_count": 7,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "grid = [\n",
+        "    [0, 0, 0],\n",
+        "    [0, 1, 0],\n",
+        "    [0, 0, 0]\n",
+        "]\n",
+        "start_node = (0, 0)\n",
+        "goal_node = (2, 2)\n",
+        "\n",
+        "print(\"Grid:\")\n",
+        "for row in grid:\n",
+        "    print(row)\n",
+        "print(f\"Start: {start_node}\")\n",
+        "print(f\"Goal: {goal_node}\")\n",
+        "\n",
+        "optimal_path, total_cost = find_path_astar(grid, start_node, goal_node)\n",
+        "\n",
+        "if optimal_path:\n",
+        "    print(\"\\nOptimal path:\", optimal_path)\n",
+        "    print(\"Total cost:\", total_cost)\n",
+        "else:\n",
+        "    print(\"\\nNo path found.\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "WKvKWYwcMt_o",
+        "outputId": "fe428105-8568-41c3-bf93-cb9b375359fd"
+      },
+      "execution_count": 8,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Grid:\n",
+            "[0, 0, 0]\n",
+            "[0, 1, 0]\n",
+            "[0, 0, 0]\n",
+            "Start: (0, 0)\n",
+            "Goal: (2, 2)\n",
+            "\n",
+            "Optimal path: [(0, 0), (0, 1), (0, 2), (1, 2), (2, 2)]\n",
+            "Total cost: 4\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
